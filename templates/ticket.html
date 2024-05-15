@@ -1,21 +1,44 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Ticket erstellen/bearbeiten</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>{% if ticket %}Ticket bearbeiten{% else %}Neues Ticket erstellen{% endif %}</h1>
-    <form method="POST">
-        <label for="beschwerde">Beschwerde:</label>
-        <input type="text" id="beschwerde" name="beschwerde" value="{{ ticket.beschwerde if ticket else '' }}" required>
-        {% if ticket %}
-            <label for="status">Status:</label>
-            <input type="text" id="status" name="status" value="{{ ticket.status }}">
-        {% endif %}
-        <button type="submit">{% if ticket %}Aktualisieren{% else %}Erstellen{% endif %}</button>
-    </form>
-    <a href="{{ url_for('index') }}">Zurück zur Übersicht</a>
-</body>
-</html>
+{% extends 'main.html' %}
+{% set active_page = "ticket" %}
+
+{% block title %}Beschwerdemanagement{% endblock %}
+{% block body %}
+
+<div class="row">
+    <!-- Left side columns -->
+    <div class="col-lg-12">
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{% if ticket %}Ticket bearbeiten{% else %}Neues Ticket erstellen{% endif %}</h5>
+
+          <!-- Floating Labels Form -->
+
+          <form class="row g-3" method="POST">
+            <div class="col-md-12">
+              <div class="form-floating">
+                  <input type="text" class="form-control" id="beschwerde" placeholder="Beschwerde" value="{{ ticket.beschwerde if ticket else '' }}" required>
+                  <label for="beschwerde">Beschwerde</label>
+              </div>
+            </div>
+              {% if ticket %}
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="status" placeholder="Status" value="{{ ticket.status }}">
+                <label for="status">Status</label>
+              </div>
+            </div>
+              {% endif %}
+
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary">{% if ticket %}Aktualisieren{% else %}Erstellen{% endif %}</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form><!-- End floating Labels Form -->
+
+        </div>
+      </div>
+
+    </div>
+    {% endblock %}
+
