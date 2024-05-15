@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket erstellen/bearbeiten</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>{% if ticket %}Ticket bearbeiten{% else %}Neues Ticket erstellen{% endif %}</h1>
+    <form method="POST">
+        <label for="beschwerde">Beschwerde:</label>
+        <input type="text" id="beschwerde" name="beschwerde" value="{{ ticket.beschwerde if ticket else '' }}" required>
+        {% if ticket %}
+            <label for="status">Status:</label>
+            <input type="text" id="status" name="status" value="{{ ticket.status }}">
+        {% endif %}
+        <button type="submit">{% if ticket %}Aktualisieren{% else %}Erstellen{% endif %}</button>
+    </form>
+    <a href="{{ url_for('index') }}">Zurück zur Übersicht</a>
+</body>
+</html>

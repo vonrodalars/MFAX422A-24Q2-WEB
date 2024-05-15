@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Beschwerdemanagement</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Beschwerdemanagement mit Tickets</h1>
+    <a href="{{ url_for('ticket_erstellen') }}">Neues Ticket erstellen</a>
+    <ul>
+        {% for ticket in tickets %}
+            <li>
+                Beschwerde: {{ ticket.beschwerde }} | Status: {{ ticket.status }}
+                <a href="{{ url_for('ticket_bearbeiten', id=ticket.id) }}">Bearbeiten</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
