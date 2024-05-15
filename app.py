@@ -1,6 +1,7 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Ticket, Bearbeiter
+from AI_Integration import get_category
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tickets.db'
@@ -16,8 +17,10 @@ def index():
 @app.route('/ticket/erstellen', methods=['GET', 'POST'])
 def ticket_erstellen():
     if request.method == 'POST':
-        beschwerde = request.form['beschwerde']
-        neues_ticket = Ticket(beschwerde=beschwerde)
+        complain = request.form['beschwerde']
+        category = get_category(complain=complain)
+        print(category)
+        neues_ticket = Ticket(beschwerde=complain)
         db.session.add(neues_ticket)
         db.session.commit()
         return redirect(url_for('index'))
