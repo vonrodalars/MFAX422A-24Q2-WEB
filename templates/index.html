@@ -143,6 +143,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Beschwerde</th>
+                <th scope="col">Kategorie</th>
                 <th scope="col">Status</th>
                 <th scope="col">Aktion</th>
             </tr>
@@ -151,7 +152,8 @@
             {% for ticket in tickets %}
             <tr>
                 <th scope="row">{{ ticket.id }}</th>
-                <td>{{ ticket.beschwerde }}</td>
+                <td>{{ ticket.complaint }}</td>
+                <td>{{ ticket.category }}</td>
                 <td>{{ ticket.status }}</td>
                 <td><a href="{{ url_for('edit_ticket', id=ticket.id) }}">Bearbeiten</a></td>
             </tr>
