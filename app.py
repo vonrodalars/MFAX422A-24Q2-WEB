@@ -1,11 +1,12 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Ticket, User, Customer
+from models import db, Ticket, User, Customer, FAQ
 from multiprocessing import Process
 from AI_Integration import get_category
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tickets.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 db.init_app(app)
 
