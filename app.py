@@ -101,7 +101,16 @@ def faq():
     return render_template("faq.html", faqs=faqs)
 
 
+def ticket_reassignment_task():
+    while True:
+        with app.app_context():
+            reassign_tickets()
+        time.sleep(86400)
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+    reassignment_thread = Thread(target=ticket_reassignment_task)
+    reassignment_thread.start()
     app.run(debug=True)
