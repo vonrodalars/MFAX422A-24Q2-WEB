@@ -16,13 +16,13 @@
           <form class="row g-3" method="POST">
             <div class="col-md-12">
               <div class="form-floating">
-                  <input type="text" class="form-control" name="beschwerde" id="beschwerde" placeholder="Beschwerde" value="{{ ticket.beschwerde if ticket else '' }}" required>
+                  <input type="text" class="form-control" name="beschwerde" id="beschwerde" placeholder="Beschwerde" value="{{ ticket.complaint if ticket else '' }}" required>
                   <label for="beschwerde">Beschwerde</label>
               </div>
             </div>
               {% if ticket %}
             <div class="col-md-6">
-              <div class="form-floating">
+              <div class="form-floating">x
                 <input type="text" class="form-control" id="status" placeholder="Status" value="{{ ticket.status }}">
                 <label for="status">Status</label>
               </div>
