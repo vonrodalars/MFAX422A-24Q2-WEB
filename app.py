@@ -1,6 +1,6 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for
-from models import db, Ticket, Bearbeiter, Customer
+from models import db, Ticket, User, Customer
 from multiprocessing import Process
 from AI_Integration import get_category
 
@@ -9,12 +9,17 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tickets.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
+def assign_user_to_ticket():
+    # Finde den Benutzer mit den wenigsten Tickets
+    user = User.query.outerjoin(Ticket).group_by(User.id).order_by(db.func.count(Ticket.id)).first()
+    return user
 
 def save_form_data_and_process(form):
     with app.app_context():
         complain = form['beschwerde']
         category = get_category(complain=complain)
-        newTicket = Ticket(complain=complain, category=category)
+        user = assign_user_to_ticket()
+        newTicket = Ticket(complain=complain, category=category, user_id=user.id)
         db.session.add(newTicket)
         db.session.commit()
 
@@ -23,7 +28,8 @@ def save_form_data_and_process(form):
 def index():
     tickets = Ticket.query.all()
     customers = Customer.query.all()
-    return render_template('index.html', tickets=tickets)
+    user = User.query.all()
+    return render_template('index.html', tickets=tickets, customers=customers, user=user)
 
 @app.route('/ticket/erstellen', methods=['GET', 'POST'])
 @app.route('/ticket/create', methods=['GET', 'POST'])
