@@ -16,7 +16,7 @@
           <form class="row g-3" method="POST">
             <div class="col-md-12">
               <div class="form-floating">
-                  <textarea class="form-control" name="beschwerde" id="beschwerde" placeholder="Beschwerde" required {% if ticket %}readonly{% endif %}>{{ ticket.beschwerde if ticket else '' }}</textarea>
+                  <textarea class="form-control" name="beschwerde" id="beschwerde" placeholder="Beschwerde" required {% if ticket %}readonly{% endif %}>{{ ticket.complaint if ticket else '' }}</textarea>
                   <label for="beschwerde">Beschwerde</label>
               </div>
             </div>
