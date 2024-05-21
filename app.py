@@ -14,7 +14,7 @@ def save_form_data_and_process(form):
     with app.app_context():
         complain = form['beschwerde']
         category = get_category(complain=complain)
-        newTicket = Ticket(complain=complain)
+        newTicket = Ticket(complain=complain, category=category)
         db.session.add(newTicket)
         db.session.commit()
 
@@ -26,6 +26,7 @@ def index():
     return render_template('index.html', tickets=tickets)
 
 @app.route('/ticket/erstellen', methods=['GET', 'POST'])
+@app.route('/ticket/create', methods=['GET', 'POST'])
 def ticket_erstellen():
     if request.method == 'POST':
         process = Process(target=save_form_data_and_process, args=(request.form,))
