@@ -89,7 +89,10 @@ def create_ticket():
 def edit_ticket(id):
     ticket = Ticket.query.get(id)
     if request.method == "POST":
-        ticket.status = request.form["status"]
+        if "antwort" in request.form:
+            ticket.answer = request.form["antwort"]
+        if "status" in request.form:
+            ticket.status = request.form["status"]
         db.session.commit()
         return redirect(url_for("index"))
     return render_template("ticket.html", ticket=ticket)
