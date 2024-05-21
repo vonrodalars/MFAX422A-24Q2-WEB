@@ -1,6 +1,6 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for
-from models import db, Ticket, Bearbeiter
+from models import db, Ticket, Bearbeiter, Customer
 from multiprocessing import Process
 from AI_Integration import get_category
 
@@ -22,7 +22,7 @@ def save_form_data_and_process(form):
 @app.route('/')
 def index():
     tickets = Ticket.query.all()
-    print(tickets)
+    customers = Customer.query.all()
     return render_template('index.html', tickets=tickets)
 
 @app.route('/ticket/erstellen', methods=['GET', 'POST'])

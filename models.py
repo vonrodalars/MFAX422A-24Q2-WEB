@@ -9,14 +9,14 @@ class Ticket(db.Model):
     category = db.Column(db.String(200))
     status = db.Column(db.String(50), nullable=False, default='offen')
     date_created = db.Column(db.DateTime, nullable=False, default=db.func.now())
-    bearbeiter_id = db.Column(db.Integer, db.ForeignKey('bearbeiter.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 
 
-class Bearbeiter(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    tickets = db.relationship('Ticket', backref='bearbeiter', lazy=True)
+    tickets = db.relationship('Ticket', backref='user', lazy=True)
 
 
 class Customer(db.Model):
