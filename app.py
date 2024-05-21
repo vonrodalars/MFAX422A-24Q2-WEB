@@ -1,6 +1,5 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for
-from models import db, Ticket, User, Customer
 from models import db, Ticket, User, Customer, FAQ
 from multiprocessing import Process
 from AI_Integration import get_category
@@ -64,7 +63,8 @@ def edit_ticket(id):
 
 @app.route("/faq")
 def faq():
-    return render_template("faq.html")
+    faqs = FAQ.query.all()
+    return render_template("faq.html", faqs=faqs)
 
 
 if __name__ == "__main__":
