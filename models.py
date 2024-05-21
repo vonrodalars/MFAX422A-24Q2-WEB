@@ -13,6 +13,7 @@ class Ticket(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     customer_id = db.Column(db.Integer, db.ForeignKey("customer.id"))
     last_assigned = db.Column(db.DateTime, nullable=False, default=db.func.now())
+    answer = db.Column(db.Text, nullable=True)
 
 
 class User(db.Model):
