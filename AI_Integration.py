@@ -7,12 +7,12 @@ assistant = client.beta.assistants.retrieve("asst_qCZJ7MU6b2arw4CQYD8b863C")
 thread = client.beta.threads.create()
 
 
-def get_category(complain="Problem mit Toaster"):
+def get_category(complaint="Problem mit Toaster"):
 
     message = client.beta.threads.messages.create(
         thread_id=thread.id,
         role="user",
-        content=complain,
+        content=complaint,
     )
 
     run = client.beta.threads.runs.create(
@@ -29,4 +29,3 @@ def get_category(complain="Problem mit Toaster"):
             return messages.data[0].content[0].text.value
         else:
             time.sleep(2)
-
