@@ -4,4 +4,12 @@
 {% block title %}FAQ{% endblock %}
 {% block body %}
 
+<ul>
+  {% for faq in faqs %}
+  <li>
+    <strong>{{ faq.stichwort }}</strong>: {{ faq.antwort }}
+  </li>
+  {% endfor %}
+</ul>
+
 {% endblock %}
