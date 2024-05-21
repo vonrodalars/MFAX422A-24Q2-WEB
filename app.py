@@ -6,17 +6,17 @@ from AI_Integration import get_category
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tickets.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
 
-def save_form_data_and_process(request):
-    complain = request.form['beschwerde']
-    category = get_category(complain=complain)
-    print(category)
-    newTicket = Ticket(complain=complain)
-    db.session.add(newTicket)
-    db.session.commit()
+def save_form_data_and_process(form):
+    with app.app_context():
+        complain = form['beschwerde']
+        category = get_category(complain=complain)
+        newTicket = Ticket(complain=complain)
+        db.session.add(newTicket)
+        db.session.commit()
 
 
 @app.route('/')
@@ -28,7 +28,7 @@ def index():
 @app.route('/ticket/erstellen', methods=['GET', 'POST'])
 def ticket_erstellen():
     if request.method == 'POST':
-        process = Process(target=save_form_data_and_process(), args=(request,))
+        process = Process(target=save_form_data_and_process, args=(request.form,))
         process.start()
         return redirect(url_for('index'))
     return render_template('ticket.html')
