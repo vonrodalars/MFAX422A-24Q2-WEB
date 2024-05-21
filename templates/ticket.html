@@ -16,19 +16,39 @@
           <form class="row g-3" method="POST">
             <div class="col-md-12">
               <div class="form-floating">
-                  <input type="text" class="form-control" name="beschwerde" id="beschwerde" placeholder="Beschwerde" value="{{ ticket.beschwerde if ticket else '' }}" required>
+                  <textarea class="form-control" name="beschwerde" id="beschwerde" placeholder="Beschwerde" required {% if ticket %}readonly{% endif %}>{{ ticket.beschwerde if ticket else '' }}</textarea>
                   <label for="beschwerde">Beschwerde</label>
               </div>
             </div>
-              {% if ticket %}
+            {% if not ticket %}
+            <div class="col-md-12">
+              <div class="form-floating">
+                <select class="form-select" id="customer_id" name="customer_id" aria-label="Customer">
+                  {% for customer in customers %}
+                  <option value="{{ customer.id }}">{{ customer.name }}</option>
+                  {% endfor %}
+                </select>
+                <label for="customer_id">Kunde</label>
+              </div>
+            </div>
+            {% endif %}
+            {% if ticket %}
+            <div class="col-md-12">
+              <div class="form-floating">
+                <textarea class="form-control" id="antwort" name="antwort" placeholder="Antwort">{{ ticket.answer if ticket else '' }}</textarea>
+                <label for="antwort">Antwort</label>
+              </div>
+            </div>
             <div class="col-md-6">
               <div class="form-floating">
-                <input type="text" class="form-control" id="status" placeholder="Status" value="{{ ticket.status }}">
+                <select class="form-select" id="status" name="status" aria-label="Status">
+                  <option value="offen" {% if ticket.status == 'offen' %}selected{% endif %}>Offen</option>
+                  <option value="geschlossen" {% if ticket.status == 'geschlossen' %}selected{% endif %}>Geschlossen</option>
+                </select>
                 <label for="status">Status</label>
               </div>
             </div>
-              {% endif %}
-
+            {% endif %}
             <div class="text-center">
               <button type="submit" class="btn btn-primary">{% if ticket %}Aktualisieren{% else %}Erstellen{% endif %}</button>
               <button type="reset" class="btn btn-secondary">Reset</button>
