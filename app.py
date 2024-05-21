@@ -11,7 +11,6 @@ db.init_app(app)
 
 
 def assign_user_to_ticket():
-    # Finde den Benutzer mit den wenigsten Tickets
     user = (
         User.query.outerjoin(Ticket)
         .group_by(User.id)
@@ -25,14 +24,12 @@ def save_form_data_and_process(form, result_queue):
     with app.app_context():
         complaint = form["beschwerde"]
 
-        # Prüfe, ob die Beschwerde eines der FAQ-Stichwörter enthält
         faqs = FAQ.query.all()
         for faq in faqs:
             if faq.stichwort.lower() in complaint.lower():
                 result_queue.put({"faq_antwort": faq.antwort})
                 return
 
-        # Falls kein FAQ-Stichwort gefunden wurde, kategorisiere und erstelle ein Ticket
         category = get_category(complaint=complaint)
         user = assign_user_to_ticket()
         newTicket = Ticket(complaint=complaint, category=category, user_id=user.id)
