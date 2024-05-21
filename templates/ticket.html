@@ -13,7 +13,6 @@
           <h5 class="card-title">{% if ticket %}Ticket bearbeiten{% else %}Neues Ticket erstellen{% endif %}</h5>
 
           <!-- Floating Labels Form -->
-
           <form class="row g-3" method="POST">
             <div class="col-md-12">
               <div class="form-floating">
@@ -36,9 +35,17 @@
             </div>
           </form><!-- End floating Labels Form -->
 
+          {% if faq_antwort %}
+            <div class="alert alert-info mt-3" role="alert">
+              <h5 class="alert-heading">FAQ Antwort:</h5>
+              <p>{{ faq_antwort }}</p>
+            </div>
+          {% endif %}
+
         </div>
       </div>
 
     </div>
-    {% endblock %}
+</div>
 
+{% endblock %}

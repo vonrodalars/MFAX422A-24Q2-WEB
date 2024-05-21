@@ -24,3 +24,9 @@ class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     tickets = db.relationship("Ticket", backref="customer", lazy=True)
+
+
+class FAQ(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    stichwort = db.Column(db.String(100), nullable=False)
+    antwort = db.Column(db.Text, nullable=False)

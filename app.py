@@ -1,17 +1,16 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for
-from models import db, Ticket, User, Customer
-from multiprocessing import Process
+from models import db, Ticket, User, Customer, FAQ
+from multiprocessing import Process, Queue
 from AI_Integration import get_category
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tickets.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 db.init_app(app)
 
 
 def assign_user_to_ticket():
-    # Finde den Benutzer mit den wenigsten Tickets
     user = (
         User.query.outerjoin(Ticket)
         .group_by(User.id)
@@ -21,14 +20,22 @@ def assign_user_to_ticket():
     return user
 
 
-def save_form_data_and_process(form):
+def save_form_data_and_process(form, result_queue):
     with app.app_context():
         complaint = form["beschwerde"]
+
+        faqs = FAQ.query.all()
+        for faq in faqs:
+            if faq.stichwort.lower() in complaint.lower():
+                result_queue.put({"faq_antwort": faq.antwort})
+                return
+
         category = get_category(complaint=complaint)
         user = assign_user_to_ticket()
         newTicket = Ticket(complaint=complaint, category=category, user_id=user.id)
         db.session.add(newTicket)
         db.session.commit()
+        result_queue.put({"ticket_erzeugt": True, "kategorie": category})
 
 
 @app.route("/")
@@ -45,8 +52,16 @@ def index():
 @app.route("/ticket/create", methods=["GET", "POST"])
 def create_ticket():
     if request.method == "POST":
-        process = Process(target=save_form_data_and_process, args=(request.form,))
+        result_queue = Queue()
+        process = Process(
+            target=save_form_data_and_process, args=(request.form, result_queue)
+        )
         process.start()
+        process.join()
+
+        result = result_queue.get()
+        if "faq_antwort" in result:
+            return render_template("ticket.html", faq_antwort=result["faq_antwort"])
         return redirect(url_for("index"))
     return render_template("ticket.html")
 
@@ -59,6 +74,12 @@ def edit_ticket(id):
         db.session.commit()
         return redirect(url_for("index"))
     return render_template("ticket.html", ticket=ticket)
+
+
+@app.route("/faq")
+def faq():
+    faqs = FAQ.query.all()
+    return render_template("faq.html", faqs=faqs)
 
 
 if __name__ == "__main__":

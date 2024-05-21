@@ -1,0 +1,20 @@
+{% extends 'main.html' %} 
+{% set active_page = "faq" %}
+
+{% block title %}FAQ{% endblock %}
+{% block body %}
+
+<ul>
+  {% for faq in faqs %}
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">
+        {{ faq.stichwort }}
+        </div>
+        <strong>{{ faq.antwort }}</strong>
+      </div>
+    </div>
+  {% endfor %}
+</ul>
+
+{% endblock %}
