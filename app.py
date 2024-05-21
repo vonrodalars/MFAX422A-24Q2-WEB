@@ -1,7 +1,7 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, Ticket, User, Customer, FAQ
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 from AI_Integration import get_category
 
 app = Flask(__name__)
@@ -21,14 +21,24 @@ def assign_user_to_ticket():
     return user
 
 
-def save_form_data_and_process(form):
+def save_form_data_and_process(form, result_queue):
     with app.app_context():
         complaint = form["beschwerde"]
+
+        # Prüfe, ob die Beschwerde eines der FAQ-Stichwörter enthält
+        faqs = FAQ.query.all()
+        for faq in faqs:
+            if faq.stichwort.lower() in complaint.lower():
+                result_queue.put({"faq_antwort": faq.antwort})
+                return
+
+        # Falls kein FAQ-Stichwort gefunden wurde, kategorisiere und erstelle ein Ticket
         category = get_category(complaint=complaint)
         user = assign_user_to_ticket()
         newTicket = Ticket(complaint=complaint, category=category, user_id=user.id)
         db.session.add(newTicket)
         db.session.commit()
+        result_queue.put({"ticket_erzeugt": True, "kategorie": category})
 
 
 @app.route("/")
@@ -45,8 +55,16 @@ def index():
 @app.route("/ticket/create", methods=["GET", "POST"])
 def create_ticket():
     if request.method == "POST":
-        process = Process(target=save_form_data_and_process, args=(request.form,))
+        result_queue = Queue()
+        process = Process(
+            target=save_form_data_and_process, args=(request.form, result_queue)
+        )
         process.start()
+        process.join()
+
+        result = result_queue.get()
+        if "faq_antwort" in result:
+            return render_template("ticket.html", faq_antwort=result["faq_antwort"])
         return redirect(url_for("index"))
     return render_template("ticket.html")
 
