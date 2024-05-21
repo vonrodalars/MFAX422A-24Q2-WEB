@@ -6,9 +6,14 @@
 
 <ul>
   {% for faq in faqs %}
-  <li>
-    <strong>{{ faq.stichwort }}</strong>: {{ faq.antwort }}
-  </li>
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">
+        {{ faq.stichwort }}
+        </div>
+        <strong>{{ faq.antwort }}</strong>
+      </div>
+    </div>
   {% endfor %}
 </ul>
 
