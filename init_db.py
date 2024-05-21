@@ -1,5 +1,5 @@
 from app import app
-from models import db, User, Customer, Ticket
+from models import db, User, Customer, FAQ
 
 # Create all the tables
 with app.app_context():
@@ -15,6 +15,22 @@ with app.app_context():
     customer2 = Customer(name="Jane Doe")
     db.session.add(customer1)
     db.session.add(customer2)
+
+    faq1 = FAQ(
+        stichwort="Drucker",
+        antwort="Bitte überprüfen Sie die Verbindung zum Drucker und starten Sie ihn neu.",
+    )
+    faq2 = FAQ(
+        stichwort="Passwort",
+        antwort="Sie können Ihr Passwort über das Selbstbedienungsportal zurücksetzen.",
+    )
+    faq3 = FAQ(
+        stichwort="Internet",
+        antwort="Stellen Sie sicher, dass Ihr Router eingeschaltet ist und eine Verbindung zum Internet besteht.",
+    )
+    db.session.add(faq1)
+    db.session.add(faq2)
+    db.session.add(faq3)
 
     db.session.commit()
 
