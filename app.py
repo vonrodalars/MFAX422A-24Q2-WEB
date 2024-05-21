@@ -43,7 +43,7 @@ def index():
 
 @app.route("/ticket/erstellen", methods=["GET", "POST"])
 @app.route("/ticket/create", methods=["GET", "POST"])
-def ticket_erstellen():
+def create_ticket():
     if request.method == "POST":
         process = Process(target=save_form_data_and_process, args=(request.form,))
         process.start()
@@ -52,7 +52,7 @@ def ticket_erstellen():
 
 
 @app.route("/ticket/<int:id>", methods=["GET", "POST"])
-def ticket_bearbeiten(id):
+def edit_ticket(id):
     ticket = Ticket.query.get(id)
     if request.method == "POST":
         ticket.status = request.form["status"]
