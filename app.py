@@ -61,6 +61,11 @@ def edit_ticket(id):
     return render_template("ticket.html", ticket=ticket)
 
 
+@app.route("/faq")
+def faq():
+    return render_template("faq.html")
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
