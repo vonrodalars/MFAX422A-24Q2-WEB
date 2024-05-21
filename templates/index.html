@@ -1,5 +1,5 @@
 {% extends 'main.html' %}
-{% set active_page = "index" %}
+{% set active_page = "Dashboard" %}
 
 {% block title %}Beschwerdemanagement{% endblock %}
 {% block body %}
@@ -153,7 +153,7 @@
                 <th scope="row">{{ ticket.id }}</th>
                 <td>{{ ticket.beschwerde }}</td>
                 <td>{{ ticket.status }}</td>
-                <td><a href="{{ url_for('ticket_bearbeiten', id=ticket.id) }}">Bearbeiten</a></td>
+                <td><a href="{{ url_for('edit_ticket', id=ticket.id) }}">Bearbeiten</a></td>
             </tr>
             {% endfor %}
         </tbody>
