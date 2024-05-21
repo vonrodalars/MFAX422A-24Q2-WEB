@@ -13,7 +13,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 db.init_app(app)
 
 
-def assign_user_to_ticket():
 def assign_user_to_ticket(ticket):
     user = (
         User.query.outerjoin(Ticket)
@@ -47,10 +46,13 @@ def save_form_data_and_process(form, result_queue):
                 return
 
         category = get_category(complaint=complaint)
-        user = assign_user_to_ticket()
-        newTicket = Ticket(complaint=complaint, category=category, user_id=user.id)
+        customer_id = form["customer_id"]
+        newTicket = Ticket(
+            complaint=complaint, category=category, customer_id=customer_id
+        )
         db.session.add(newTicket)
         db.session.commit()
+        assign_user_to_ticket(newTicket)
         result_queue.put({"ticket_erzeugt": True, "kategorie": category})
 
 
@@ -79,7 +81,8 @@ def create_ticket():
         if "faq_antwort" in result:
             return render_template("ticket.html", faq_antwort=result["faq_antwort"])
         return redirect(url_for("index"))
-    return render_template("ticket.html")
+    customers = Customer.query.all()
+    return render_template("ticket.html", customers=customers)
 
 
 @app.route("/ticket/<int:id>", methods=["GET", "POST"])
