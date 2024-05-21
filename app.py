@@ -27,7 +27,7 @@ def assign_user_to_ticket(ticket):
 
 def reassign_tickets():
     now = datetime.now()
-    three_days_ago = now = timedelta(days=3)
+    three_days_ago = now - timedelta(days=3)
     tickets = Ticket.query.filter(
         Ticket.status == "offen", Ticket.last_assigned < three_days_ago
     ).all()
