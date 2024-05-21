@@ -3,6 +3,9 @@ from flask import Flask, render_template, request, redirect, url_for
 from models import db, Ticket, User, Customer, FAQ
 from multiprocessing import Process, Queue
 from AI_Integration import get_category
+from datetime import datetime, timedelta
+from threading import Thread
+import time
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
@@ -11,13 +14,16 @@ db.init_app(app)
 
 
 def assign_user_to_ticket():
+def assign_user_to_ticket(ticket):
     user = (
         User.query.outerjoin(Ticket)
         .group_by(User.id)
         .order_by(db.func.count(Ticket.id))
         .first()
     )
-    return user
+    ticket.user_id = user.id
+    ticket.last_assigned = datetime.now()
+    db.session.commit()
 
 
 def save_form_data_and_process(form, result_queue):
