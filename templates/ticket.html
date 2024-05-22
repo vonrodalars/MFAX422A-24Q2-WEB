@@ -20,6 +20,7 @@
                   <label for="beschwerde">Beschwerde</label>
               </div>
             </div>
+            
             {% if not ticket %}
             <div class="col-md-12">
               <div class="form-floating">
@@ -32,6 +33,7 @@
               </div>
             </div>
             {% endif %}
+            
             {% if ticket %}
             <div class="col-md-12">
               <div class="form-floating">
@@ -49,6 +51,7 @@
               </div>
             </div>
             {% endif %}
+            
             <div class="text-center">
               <button type="submit" class="btn btn-primary">{% if ticket %}Aktualisieren{% else %}Erstellen{% endif %}</button>
               <button type="reset" class="btn btn-secondary">Reset</button>
