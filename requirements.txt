@@ -24,3 +24,4 @@ tqdm==4.66.4
 typing_extensions==4.11.0
 Werkzeug==3.0.3
 zipp==3.18.1
+APScheduler==3.10.4
