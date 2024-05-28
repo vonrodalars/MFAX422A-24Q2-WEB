@@ -4,14 +4,13 @@ from models import db, Ticket, User, Customer, FAQ
 from multiprocessing import Process, Queue
 from AI_Integration import get_category
 from datetime import datetime, timedelta
-from threading import Thread
-import time
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 db.init_app(app)
-
 
 def assign_user_to_ticket(ticket):
     user = (
@@ -24,21 +23,18 @@ def assign_user_to_ticket(ticket):
     ticket.last_assigned = datetime.now()
     db.session.commit()
 
-
 def reassign_tickets():
     now = datetime.now()
-    three_days_ago = now = timedelta(days=3)
+    three_days_ago = now - timedelta(days=3)
     tickets = Ticket.query.filter(
         Ticket.status == "offen", Ticket.last_assigned < three_days_ago
     ).all()
     for ticket in tickets:
         assign_user_to_ticket(ticket)
 
-
 def save_form_data_and_process(form, result_queue):
     with app.app_context():
         complaint = form["beschwerde"]
-
         faqs = FAQ.query.all()
         for faq in faqs:
             if faq.stichwort.lower() in complaint.lower():
@@ -55,7 +51,6 @@ def save_form_data_and_process(form, result_queue):
         assign_user_to_ticket(newTicket)
         result_queue.put({"ticket_erzeugt": True, "kategorie": category})
 
-
 @app.route("/")
 def index():
     tickets = Ticket.query.all()
@@ -64,7 +59,6 @@ def index():
     return render_template(
         "index.html", tickets=tickets, customers=customers, user=user
     )
-
 
 @app.route("/ticket/erstellen", methods=["GET", "POST"])
 @app.route("/ticket/create", methods=["GET", "POST"])
@@ -84,7 +78,6 @@ def create_ticket():
     customers = Customer.query.all()
     return render_template("ticket.html", customers=customers)
 
-
 @app.route("/ticket/<int:id>", methods=["GET", "POST"])
 def edit_ticket(id):
     ticket = Ticket.query.get(id)
@@ -97,23 +90,24 @@ def edit_ticket(id):
         return redirect(url_for("index"))
     return render_template("ticket.html", ticket=ticket)
 
-
 @app.route("/faq")
 def faq():
     faqs = FAQ.query.all()
     return render_template("faq.html", faqs=faqs)
 
-
 def ticket_reassignment_task():
-    while True:
-        with app.app_context():
-            reassign_tickets()
-        time.sleep(86400)
+    with app.app_context():
+        reassign_tickets()
 
+# Scheduler einrichten
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=ticket_reassignment_task, trigger="interval", seconds=86400)
+scheduler.start()
+
+# Stellen Sie sicher, dass der Scheduler bei Beendigung der App beendet wird
+atexit.register(lambda: scheduler.shutdown())
 
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    reassignment_thread = Thread(target=ticket_reassignment_task)
-    reassignment_thread.start()
     app.run(debug=True)
