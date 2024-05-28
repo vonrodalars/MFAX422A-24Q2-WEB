@@ -101,7 +101,7 @@ def ticket_reassignment_task():
 
 # Scheduler einrichten
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=ticket_reassignment_task, trigger="interval", seconds=86400)
+scheduler.add_job(func=ticket_reassignment_task, trigger="interval", seconds=259200)
 scheduler.start()
 
 # Stellen Sie sicher, dass der Scheduler bei Beendigung der App beendet wird
