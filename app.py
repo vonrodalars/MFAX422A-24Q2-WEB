@@ -99,12 +99,10 @@ def ticket_reassignment_task():
     with app.app_context():
         reassign_tickets()
 
-# Scheduler einrichten
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=ticket_reassignment_task, trigger="interval", seconds=259200)
 scheduler.start()
 
-# Stellen Sie sicher, dass der Scheduler bei Beendigung der App beendet wird
 atexit.register(lambda: scheduler.shutdown())
 
 if __name__ == "__main__":
