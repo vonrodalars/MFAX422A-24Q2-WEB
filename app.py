@@ -100,7 +100,7 @@ def ticket_reassignment_task():
         reassign_tickets()
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=ticket_reassignment_task, trigger="interval", seconds=259200)
+scheduler.add_job(func=ticket_reassignment_task, trigger="interval", seconds=86400)
 scheduler.start()
 
 atexit.register(lambda: scheduler.shutdown())
